@@ -1,7 +1,5 @@
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
-
-// Notebook oluştur
 exports.createNotebook = async (req, res) => {
     const { name, description } = req.body;
     const userId = req.user.userId;
@@ -20,8 +18,6 @@ exports.createNotebook = async (req, res) => {
         res.status(500).json({ message: 'Notebook oluşturulurken hata oluştu.' });
     }
 };
-
-// Kullanıcının tüm notebooklarını getir
 exports.getNotebooks = async (req, res) => {
     const userId = req.user.userId;
     try {
@@ -34,8 +30,6 @@ exports.getNotebooks = async (req, res) => {
         res.status(500).json({ message: 'Notebooklar alınırken hata oluştu.' });
     }
 };
-
-// Notebook güncelle
 exports.updateNotebook = async (req, res) => {
     const { id } = req.params;
     const { name, description } = req.body;
@@ -61,8 +55,6 @@ exports.updateNotebook = async (req, res) => {
         res.status(500).json({ message: 'Notebook güncellenirken hata oluştu.' });
     }
 };
-
-// Notebook sil
 exports.deleteNotebook = async (req, res) => {
     const { id } = req.params;
     const userId = req.user.userId;

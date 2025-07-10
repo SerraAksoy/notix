@@ -1,11 +1,9 @@
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 
-// Note oluştur
 exports.createNote = async (req, res) => {
     const { title, content, access, notebookId } = req.body;
     const userId = req.user.userId;
-
     try {
         const notebook = await prisma.notebook.findUnique({
             where: { id: notebookId }
@@ -14,7 +12,6 @@ exports.createNote = async (req, res) => {
         if (!notebook || notebook.userId !== userId) {
             return res.status(404).json({ message: 'Notebook bulunamadı veya yetkiniz yok.' });
         }
-
         const note = await prisma.note.create({
             data: {
                 title,
@@ -23,8 +20,6 @@ exports.createNote = async (req, res) => {
                 notebookId
             }
         });
-
-        // İlk revision kaydı
         await prisma.revision.create({
             data: {
                 noteId: note.id,
@@ -38,8 +33,6 @@ exports.createNote = async (req, res) => {
         res.status(500).json({ message: 'Note oluşturulurken hata oluştu.' });
     }
 };
-
-// Kullanıcının tüm notlarını getir
 exports.getNotes = async (req, res) => {
     const userId = req.user.userId;
     try {
@@ -56,8 +49,6 @@ exports.getNotes = async (req, res) => {
         res.status(500).json({ message: 'Notlar alınırken hata oluştu.' });
     }
 };
-
-// Note güncelle (ve revision ekle)
 exports.updateNote = async (req, res) => {
     const { id } = req.params;
     const { title, content, access } = req.body;
@@ -77,8 +68,6 @@ exports.updateNote = async (req, res) => {
             where: { id: Number(id) },
             data: { title, content, access }
         });
-
-        // Revision ekle
         await prisma.revision.create({
             data: {
                 noteId: updatedNote.id,
@@ -92,8 +81,6 @@ exports.updateNote = async (req, res) => {
         res.status(500).json({ message: 'Note güncellenirken hata oluştu.' });
     }
 };
-
-// Note sil
 exports.deleteNote = async (req, res) => {
     const { id } = req.params;
     const userId = req.user.userId;
@@ -118,8 +105,6 @@ exports.deleteNote = async (req, res) => {
         res.status(500).json({ message: 'Note silinirken hata oluştu.' });
     }
 };
-
-// Note'u eski bir revision'a geri al
 exports.rollbackNote = async (req, res) => {
     const { id } = req.params;
     const { revisionId } = req.body;
@@ -147,8 +132,6 @@ exports.rollbackNote = async (req, res) => {
             where: { id: note.id },
             data: { content: revision.content }
         });
-
-        // Yeni bir revision kaydı ekle (geri alınan hali de revision olarak tutulsun)
         await prisma.revision.create({
             data: {
                 noteId: updatedNote.id,
