@@ -17,3 +17,4 @@ Tailwind CSS : CSS yönetimi
 -EKSTRA-
 Git,Github : Sürüm kontrol.
 REST API : Frontend-Backend iletişimi.
+POSTMAN : API test ve debug.
