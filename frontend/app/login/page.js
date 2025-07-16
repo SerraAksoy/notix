@@ -3,25 +3,26 @@
 import { useState } from "react";
 import axios from "@/lib/axios";
 import { useRouter } from "next/navigation";
+import { useAuth } from "../contexts/AuthContext";
 
 export default function LoginPage() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const router = useRouter();
-
+    const { login } = useAuth();
     const handleLogin = async (e) => {
         e.preventDefault();
         try {
             const res = await axios.post("/auth/login", { email, password });
             localStorage.setItem("accessToken", res.data.accessToken);
+            login(res.data.accessToken);
             alert("Giriş başarılı!");
-            router.push("/dashboard"); // test için yönlendirme
+            router.push("/dashboard"); //  için yönlendirme
         } catch (err) {
             console.error(err);
             alert(err.response?.data?.message || "Giriş başarısız!");
         }
     };
-
     return (
         <main className="flex min-h-screen items-center justify-center">
             <form onSubmit={handleLogin} className="flex flex-col gap-4 w-80">
