@@ -21,8 +21,6 @@ export default function Navbar() {
                 localStorage.setItem("userAvatar", random);
                 setAvatarUrl(random);
             }
-
-            // ✳️ username backend'den çekiliyor
             const token = localStorage.getItem("token");
             axios
                 .get("/auth/me", {

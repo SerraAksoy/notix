@@ -15,17 +15,17 @@ app.use(cors({
     origin: "http://localhost:3000",
     credentials: true
 }));
-app.use(express.json()); // <-- önce middleware'ler
+app.use(express.json());
 
-app.use('/api/auth', authRoutes); // <-- sonra router
+app.use('/api/auth', authRoutes);
 app.use('/api/notebooks', notebookRoutes);
 app.use('/api/notes', noteRoutes);
 app.use("/users", userRoutes);
 
 app.get('/', (req, res) => {
-    res.send('Notix API Çalışıyor 🚀');
+    res.send('Notix API Çalışıyor ');
 });
 
 app.listen(PORT, () => {
-    console.log(`Server ${PORT} portunda çalışıyor 🚀`);
+    console.log(`Server ${PORT} portunda çalışıyor `);
 });

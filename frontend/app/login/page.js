@@ -29,10 +29,8 @@ export default function LoginPage() {
         <main
             className="relative min-h-screen flex items-center justify-center bg-[url('/login-bg.jpeg')] bg-cover bg-center"
         >
-            {/* Blur Overlay */}
             <div className="absolute inset-0 bg-white bg-opacity-5 backdrop-blur-sm z-0" />
 
-            {/* Giriş Kartı */}
             <form
                 onSubmit={handleLogin}
                 className="z-10 bg-white bg-opacity-80 backdrop-blur-md shadow-2xl rounded-xl p-8 w-[90%] max-w-md space-y-4 animate-fade-in-down"
@@ -60,7 +58,6 @@ export default function LoginPage() {
                 </button>
             </form>
 
-            {/* Hafif animasyon (örnek) */}
             <div className="absolute bottom-4 right-4 text-xs text-gray-500 z-10 animate-bounce">
                 💡 Şifreni hatırlamıyor musun?
             </div>

@@ -13,7 +13,7 @@ export default function RootLayout({ children }) {
         <body>
         <AuthProvider>
             <Navbar />
-            <div>{/* navbar sabit, içerik biraz aşağıda */}
+            <div>
                 {children}
             </div>
         </AuthProvider>

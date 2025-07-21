@@ -77,8 +77,6 @@ export default function NotebookDetailPage() {
                         </button>
                     </form>
                 </div>
-
-                {/* Sağ: Notlar Listesi */}
                 <div>
                     <h2 className="text-2xl font-bold mb-4 text-secondary">📚 Notlarım</h2>
                     <div className="space-y-4 max-h-[500px] overflow-y-auto pr-2">

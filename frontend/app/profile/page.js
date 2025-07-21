@@ -33,7 +33,6 @@ export default function ProfilePage() {
             <div className="max-w-3xl mx-auto p-20">
                 <h1 className="text-4xl font-bold text-primary mb-8 text-center">👤 Profilim</h1>
 
-                {/* Kullanıcı Bilgileri */}
                 <div className="bg-base-100 rounded-xl shadow-md border border-base-300 p-6 mb-8">
                     <h2 className="text-xl font-semibold text-accent mb-2">🪪 Kullanıcı Bilgileri</h2>
                     <div className="space-y-2">
@@ -43,7 +42,6 @@ export default function ProfilePage() {
                     </div>
                 </div>
 
-                {/* İstatistik Kartları */}
                 {stats ? (
                     <div className="grid gap-6 grid-cols-1 sm:grid-cols-2">
                         <div className="card bg-base-100 shadow-lg p-5 border border-base-300">

@@ -64,7 +64,6 @@ export default function RegisterPage() {
                 </button>
             </form>
 
-            {/* Alt not */}
             <div className="absolute bottom-4 left-4 text-xs text-gray-500 z-10 animate-fade-in">
                 🎉 Hadi başlayalım, fikirlerini koru!
             </div>

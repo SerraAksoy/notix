@@ -27,8 +27,6 @@ export default function DashboardPage() {
         <div className="bg-[url('/dashboard-bg1.jpeg')] bg-white bg-opacity-70 backdrop-blur-md min-h-screen bg-cover bg-center bg-no-repeat">
             <div className="min-h-screen px-6 pt-24 pb-10">
                 <h1 className="text-3xl font-bold">Hoş geldin!</h1>
-
-                {/* Hızlı Erişim */}
                 <div className="mt-8">
                     <h2 className="text-xl font-semibold mb-2">Hızlı Erişim</h2>
                     <div className="flex flex-wrap gap-3">
@@ -43,8 +41,6 @@ export default function DashboardPage() {
                         </Link>
                     </div>
                 </div>
-
-                {/* Not Defterleri */}
                 <div className="mt-10">
                     <h2 className="text-xl font-semibold mb-6">Son Not Defterlerin</h2>
 
@@ -53,8 +49,6 @@ export default function DashboardPage() {
                             <div key={nb.id} className="flex flex-col items-center ">
                                 <div className="group perspective w-52 h-72">
                                     <div className="relative w-full h-full duration-700 transform-style preserve-3d group-hover:rotate-y-180">
-
-                                        {/* ÖN KAPAK */}
                                         <div
                                             className="absolute w-full h-full backface-hidden rounded-xl shadow-xl"
                                             style={{
@@ -64,8 +58,6 @@ export default function DashboardPage() {
                                             }}
                                         >
                                         </div>
-
-                                        {/* İÇ SAYFA */}
                                         <div
                                             className="absolute w-full h-full backface-hidden rounded-xl shadow-inner p-4 rotate-y-180 overflow-hidden "
                                             style={{
@@ -86,7 +78,6 @@ export default function DashboardPage() {
                                     </div>
                                 </div>
 
-                                {/* Alt Etiket */}
                                 <p className="text-sm font-medium text-gray-800">{nb.name}</p>
                             </div>
                         ))}

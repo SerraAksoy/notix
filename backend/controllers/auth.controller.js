@@ -19,8 +19,6 @@ const generateRefreshToken = (user) => {
         { expiresIn: '7d' }
     );
 };
-
-// ✅ Kayıt işlemi
 exports.register = async (req, res) => {
     const { email, password, username } = req.body;
 
@@ -53,8 +51,6 @@ exports.register = async (req, res) => {
         res.status(500).json({ message: "Sunucu hatası." });
     }
 };
-
-// ✅ Giriş işlemi
 exports.login = async (req, res) => {
     const { email, password } = req.body;
 
@@ -83,8 +79,6 @@ exports.login = async (req, res) => {
         res.status(500).json({ message: "Sunucu hatası." });
     }
 };
-
-// ✅ Refresh işlemi
 exports.refreshToken = (req, res) => {
     const { token } = req.body;
     if (!token) return res.status(401).json({ message: "Token gerekli." });
