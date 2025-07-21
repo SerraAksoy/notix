@@ -6,7 +6,7 @@ const prisma = new PrismaClient();
 
 const generateAccessToken = (user) => {
     return jwt.sign(
-        { userId: user.id, email: user.email },
+        { userId: user.id, email: user.email, username: user.username },
         process.env.JWT_SECRET,
         { expiresIn: '15m' }
     );
@@ -14,32 +14,50 @@ const generateAccessToken = (user) => {
 
 const generateRefreshToken = (user) => {
     return jwt.sign(
-        { userId: user.id, email: user.email },
+        { userId: user.id, email: user.email, username: user.username },
         process.env.REFRESH_SECRET,
         { expiresIn: '7d' }
     );
 };
 
+// ✅ Kayıt işlemi
 exports.register = async (req, res) => {
-    const { email, password } = req.body;
+    const { email, password, username } = req.body;
+
     try {
         const existingUser = await prisma.user.findUnique({ where: { email } });
         if (existingUser) return res.status(400).json({ message: "Email zaten kayıtlı." });
 
+        const existingUsername = await prisma.user.findUnique({ where: { username } });
+        if (existingUsername) return res.status(400).json({ message: "Kullanıcı adı alınmış." });
+
         const hashedPassword = await bcrypt.hash(password, 10);
         const user = await prisma.user.create({
-            data: { email, password: hashedPassword },
+            data: {
+                email,
+                password: hashedPassword,
+                username,
+            },
         });
 
-        res.status(201).json({ message: "Kayıt başarılı.", user: { id: user.id, email: user.email } });
+        res.status(201).json({
+            message: "Kayıt başarılı.",
+            user: {
+                id: user.id,
+                email: user.email,
+                username: user.username,
+            },
+        });
     } catch (error) {
         console.error(error);
         res.status(500).json({ message: "Sunucu hatası." });
     }
 };
 
+// ✅ Giriş işlemi
 exports.login = async (req, res) => {
     const { email, password } = req.body;
+
     try {
         const user = await prisma.user.findUnique({ where: { email } });
         if (!user) return res.status(400).json({ message: "Kullanıcı bulunamadı." });
@@ -54,7 +72,11 @@ exports.login = async (req, res) => {
             message: "Giriş başarılı.",
             accessToken,
             refreshToken,
-            user: { id: user.id, email: user.email }
+            user: {
+                id: user.id,
+                email: user.email,
+                username: user.username,
+            },
         });
     } catch (error) {
         console.error(error);
@@ -62,6 +84,7 @@ exports.login = async (req, res) => {
     }
 };
 
+// ✅ Refresh işlemi
 exports.refreshToken = (req, res) => {
     const { token } = req.body;
     if (!token) return res.status(401).json({ message: "Token gerekli." });
@@ -71,4 +94,20 @@ exports.refreshToken = (req, res) => {
         const accessToken = generateAccessToken(user);
         res.json({ accessToken });
     });
+};
+
+exports.getMe = async (req, res) => {
+    try {
+        const user = await prisma.user.findUnique({
+            where: { id: req.user.userId },
+            select: { id: true, email: true, username: true },
+        });
+
+        if (!user) return res.status(404).json({ message: "Kullanıcı bulunamadı" });
+
+        res.json(user);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: "Sunucu hatası" });
+    }
 };

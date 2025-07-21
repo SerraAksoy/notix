@@ -1,5 +1,7 @@
 "use client";
 
+export const dynamic = "force-dynamic";
+
 import { useEffect, useState } from "react";
 import axios from "@/lib/axios";
 import { useParams } from "next/navigation";
@@ -39,48 +41,73 @@ export default function NotebookDetailPage() {
     };
 
     return (
-        <div className="p-6">
-            <h1 className="text-2xl font-bold mb-4">Notlar</h1>
+        <div
+            className="min-h-screen bg-[url('/dashboard-bg1.jpeg')] bg-cover bg-center bg-no-repeat px-4 py-24"
+        >
+            <div className="bg-white/70 backdrop-blur-md rounded-xl shadow-xl p-6 grid grid-cols-1 md:grid-cols-2 gap-8 max-w-6xl mx-auto">
+                <div>
+                    <h2 className="text-2xl font-bold mb-4 text-primary">📝 Yeni Not Ekle</h2>
+                    <form onSubmit={handleCreate} className="flex flex-col gap-3">
+                        <input
+                            type="text"
+                            placeholder="Not Başlığı"
+                            className="input input-bordered w-full"
+                            value={title}
+                            onChange={(e) => setTitle(e.target.value)}
+                            required
+                        />
+                        <textarea
+                            placeholder="Not içeriği..."
+                            className="textarea textarea-bordered min-h-[140px]"
+                            value={content}
+                            onChange={(e) => setContent(e.target.value)}
+                            required
+                        />
+                        <select
+                            className="select select-bordered"
+                            value={access}
+                            onChange={(e) => setAccess(e.target.value)}
+                        >
+                            <option value="PRIVATE">🔒 Gizli</option>
+                            <option value="SHARED">👥 Paylaşılan</option>
+                            <option value="PUBLIC">🌐 Herkese Açık</option>
+                        </select>
+                        <button type="submit" className="btn btn-primary mt-2">
+                            Notu Kaydet
+                        </button>
+                    </form>
+                </div>
 
-            <form onSubmit={handleCreate} className="flex flex-col gap-2 mb-6">
-                <input
-                    type="text"
-                    placeholder="Not Başlığı"
-                    className="border p-2 rounded"
-                    value={title}
-                    onChange={(e) => setTitle(e.target.value)}
-                    required
-                />
-                <textarea
-                    placeholder="İçerik"
-                    className="border p-2 rounded"
-                    value={content}
-                    onChange={(e) => setContent(e.target.value)}
-                    required
-                />
-                <select
-                    className="border p-2 rounded"
-                    value={access}
-                    onChange={(e) => setAccess(e.target.value)}
-                >
-                    <option value="PRIVATE">Gizli</option>
-                    <option value="SHARED">Paylaşılan</option>
-                    <option value="PUBLIC">Herkese Açık</option>
-                </select>
-                <button type="submit" className="bg-blue-500 text-white p-2 rounded">
-                    Not Ekle
-                </button>
-            </form>
-
-            <ul className="space-y-2">
-                {notes.map((note) => (
-                    <li key={note.id} className="border p-4 rounded shadow">
-                        <h2 className="text-lg font-semibold">{note.title}</h2>
-                        <p className="text-gray-600">{note.content}</p>
-                        <p className="text-sm text-gray-400 italic">Erişim: {note.access}</p>
-                    </li>
-                ))}
-            </ul>
+                {/* Sağ: Notlar Listesi */}
+                <div>
+                    <h2 className="text-2xl font-bold mb-4 text-secondary">📚 Notlarım</h2>
+                    <div className="space-y-4 max-h-[500px] overflow-y-auto pr-2">
+                        {notes.length > 0 ? (
+                            notes.map((note) => (
+                                <div key={note.id} className="bg-base-100 p-4 rounded-lg shadow border border-gray-200">
+                                    <h3 className="text-lg font-semibold mb-1">{note.title}</h3>
+                                    <p className="text-sm text-gray-600 whitespace-pre-line">{note.content}</p>
+                                    <div className="mt-2">
+                                        <span
+                                            className={`badge ${
+                                                note.access === "PRIVATE"
+                                                    ? "badge-primary"
+                                                    : note.access === "SHARED"
+                                                        ? "badge-secondary"
+                                                        : "badge-accent"
+                                            }`}
+                                        >
+                                            {note.access}
+                                        </span>
+                                    </div>
+                                </div>
+                            ))
+                        ) : (
+                            <p className="text-gray-400 italic">Henüz not eklenmemiş.</p>
+                        )}
+                    </div>
+                </div>
+            </div>
         </div>
     );
 }

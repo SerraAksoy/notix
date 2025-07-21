@@ -1,5 +1,5 @@
 "use client";
-
+import axios from "@/lib/axios";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useAuth } from "../contexts/AuthContext";
@@ -9,17 +9,27 @@ export default function Navbar() {
     const router = useRouter();
     const { isAuthenticated, logout } = useAuth();
     const [avatarUrl, setAvatarUrl] = useState("/default-avatar.png");
+    const [username, setUsername] = useState("");
 
     useEffect(() => {
         if (isAuthenticated) {
-            const stored = localStorage.getItem("userAvatar");
-            if (stored) {
-                setAvatarUrl(stored);
+            const storedAvatar = localStorage.getItem("userAvatar");
+            if (storedAvatar) {
+                setAvatarUrl(storedAvatar);
             } else {
                 const random = `https://api.dicebear.com/7.x/thumbs/svg?seed=${Math.floor(Math.random() * 1000)}`;
                 localStorage.setItem("userAvatar", random);
                 setAvatarUrl(random);
             }
+
+            // ✳️ username backend'den çekiliyor
+            const token = localStorage.getItem("token");
+            axios
+                .get("/auth/me", {
+                    headers: { Authorization: `Bearer ${token}` },
+                })
+                .then((res) => setUsername(res.data.username))
+                .catch((err) => console.error("Kullanıcı adı alınamadı:", err));
         }
     }, [isAuthenticated]);
 
@@ -33,9 +43,9 @@ export default function Navbar() {
             <div className="flex gap-2 items-center">
                 {isAuthenticated ? (
                     <>
-                        <Link href="/dashboard/notebooks" className="btn btn-ghost">
-                            Not Defterlerim
-                        </Link>
+                        <span className="text-sm font-medium text-gray-600 hidden sm:inline">
+                            👋 Merhaba, <span className="text-primary font-semibold">{username}</span>
+                        </span>
                         <div className="dropdown dropdown-end">
                             <div tabIndex={0} role="button" className="btn btn-ghost btn-circle avatar">
                                 <div className="w-10 rounded-full ring ring-primary ring-offset-base-100 ring-offset-2">
@@ -48,7 +58,16 @@ export default function Navbar() {
                             >
                                 <li><Link href="/profile">Profilim</Link></li>
                                 <li><Link href="/change-password">Şifre Değiştir</Link></li>
-                                <li><button onClick={logout}>Çıkış Yap</button></li>
+                                <li>
+                                    <button
+                                        onClick={() => {
+                                            logout();
+                                            router.push("/");
+                                        }}
+                                    >
+                                        Çıkış Yap
+                                    </button>
+                                </li>
                             </ul>
                         </div>
                     </>
