@@ -8,13 +8,12 @@ datasource db {
 }
 
 model User {
-  id        Int      @id @default(autoincrement())
-  email     String   @unique
+  id        Int        @id @default(autoincrement())
+  email     String     @unique
   password  String
-  username  String?  @unique
-  createdAt DateTime @default(now())
-
-  Notebook Notebook[]
+  username  String?    @unique
+  createdAt DateTime   @default(now())
+  Notebook  Notebook[]
 }
 
 model Notebook {
@@ -38,7 +37,7 @@ model Note {
 
 model Revision {
   id        Int      @id @default(autoincrement())
-  note      Note     @relation(fields: [noteId], references: [id])
+  note      Note     @relation(fields: [noteId], references: [id], onDelete: Cascade)
   noteId    Int
   content   String
   createdAt DateTime @default(now())

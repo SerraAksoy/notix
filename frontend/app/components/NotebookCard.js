@@ -10,7 +10,7 @@ export default function NotebookCard({ id, name, description }) {
 
                 <div className="absolute w-full h-full backface-hidden bg-rose-200 border-[3px] border-rose-300 rounded-xl shadow-xl p-6 flex flex-col justify-center">
                     <h2 className="text-xl font-bold text-brown-800">{name}</h2>
-                    <p className="text-sm text-brown-600 mt-2 italic">👀 Tıkla ve aç!</p>
+                    <p className="text-sm text-brown-600 mt-2 italic">Tıkla ve aç!</p>
                 </div>
 
                 <div className="absolute w-full h-full backface-hidden bg-amber-50 border border-gray-200 rounded-xl shadow-inner p-6 rotate-y-180 overflow-hidden">

@@ -19,7 +19,7 @@ export function AuthProvider({ children }) {
 
     const login = (token, username) => {
         localStorage.setItem("token", token);
-        localStorage.setItem("username", username); // 👈 kullanıcı adı kaydediliyor
+        localStorage.setItem("username", username);
         setIsAuthenticated(true);
         setUsername(username);
     };

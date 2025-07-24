@@ -145,3 +145,51 @@ exports.rollbackNote = async (req, res) => {
         res.status(500).json({ message: 'Geri alma işlemi sırasında hata oluştu.' });
     }
 };
+exports.getNoteById = async (req, res) => {
+    const { id } = req.params;
+    const userId = req.user.userId;
+
+    try {
+        const note = await prisma.note.findUnique({
+            where: { id: Number(id) },
+            include: {
+                notebook: true
+            }
+        });
+
+        if (!note || note.notebook.userId !== userId) {
+            return res.status(404).json({ message: "Note bulunamadı veya yetkiniz yok." });
+        }
+
+        res.json(note);
+    } catch (error) {
+        console.error("Note alınırken hata oluştu:", error);
+        res.status(500).json({ message: "Note alınırken bir hata oluştu." });
+    }
+};
+
+exports.getRevisions = async (req, res) => {
+    const { id } = req.params;
+    const userId = req.user.userId;
+
+    try {
+        const note = await prisma.note.findUnique({
+            where: { id: Number(id) },
+            include: { notebook: true },
+        });
+
+        if (!note || note.notebook.userId !== userId) {
+            return res.status(403).json({ message: "Yetkisiz." });
+        }
+
+        const revisions = await prisma.revision.findMany({
+            where: { noteId: Number(id) },
+            orderBy: { createdAt: "desc" },
+        });
+
+        res.json(revisions);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: "Revisions alınamadı." });
+    }
+};

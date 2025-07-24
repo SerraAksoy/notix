@@ -54,10 +54,9 @@ export default function LoginPage() {
                 />
 
                 <button type="submit" className="btn btn-primary w-full">
-                    🚀 Giriş Yap
+                    Giriş Yap
                 </button>
             </form>
-
             <div className="absolute bottom-4 right-4 text-xs text-gray-500 z-10 animate-bounce">
                 💡 Şifreni hatırlamıyor musun?
             </div>

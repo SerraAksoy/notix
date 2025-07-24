@@ -1,10 +1,10 @@
 "use client";
 
 export const dynamic = "force-dynamic";
-
 import { useEffect, useState } from "react";
 import axios from "@/lib/axios";
 import { useParams } from "next/navigation";
+import Link from "next/link";
 
 export default function NotebookDetailPage() {
     const { id } = useParams();
@@ -39,11 +39,8 @@ export default function NotebookDetailPage() {
             console.error(err);
         }
     };
-
     return (
-        <div
-            className="min-h-screen bg-[url('/dashboard-bg1.jpeg')] bg-cover bg-center bg-no-repeat px-4 py-24"
-        >
+        <div className="min-h-screen bg-[url('/dashboard-bg1.jpeg')] bg-cover bg-center bg-no-repeat px-4 py-24">
             <div className="bg-white/70 backdrop-blur-md rounded-xl shadow-xl p-6 grid grid-cols-1 md:grid-cols-2 gap-8 max-w-6xl mx-auto">
                 <div>
                     <h2 className="text-2xl font-bold mb-4 text-primary">📝 Yeni Not Ekle</h2>
@@ -77,15 +74,27 @@ export default function NotebookDetailPage() {
                         </button>
                     </form>
                 </div>
+
                 <div>
                     <h2 className="text-2xl font-bold mb-4 text-secondary">📚 Notlarım</h2>
                     <div className="space-y-4 max-h-[500px] overflow-y-auto pr-2">
                         {notes.length > 0 ? (
                             notes.map((note) => (
-                                <div key={note.id} className="bg-base-100 p-4 rounded-lg shadow border border-gray-200">
-                                    <h3 className="text-lg font-semibold mb-1">{note.title}</h3>
-                                    <p className="text-sm text-gray-600 whitespace-pre-line">{note.content}</p>
-                                    <div className="mt-2">
+                                <div
+                                    key={note.id}
+                                    className="bg-base-100 p-4 rounded-lg shadow border border-gray-200 relative group"
+                                >
+                                    <Link href={`/dashboard/notebooks/notes/${note.id}`}>
+                                        <h3 className="text-lg font-semibold mb-1 text-primary hover:underline cursor-pointer">
+                                            {note.title}
+                                        </h3>
+                                    </Link>
+
+                                    <p className="text-sm text-gray-600 whitespace-pre-line line-clamp-3">
+                                        {note.content}
+                                    </p>
+
+                                    <div className="mt-2 flex justify-between items-center">
                                         <span
                                             className={`badge ${
                                                 note.access === "PRIVATE"
@@ -97,6 +106,45 @@ export default function NotebookDetailPage() {
                                         >
                                             {note.access}
                                         </span>
+
+                                        <div className="flex items-center gap-2">
+                                            {note.access === "SHARED" && (
+                                                <button
+                                                    onClick={() => {
+                                                        const fullUrl = `${window.location.origin}/dashboard/notebooks/notes/${note.id}`;
+                                                        navigator.clipboard.writeText(fullUrl)
+                                                            .then(() => alert("🔗 Link panoya kopyalandı!"))
+                                                            .catch(() => alert("❌ Link kopyalanamadı."));
+                                                    }}
+                                                    className="btn btn-sm btn-outline btn-info"
+                                                >
+                                                    🔗 Paylaş
+                                                </button>
+                                            )}
+
+                                            <button
+                                                onClick={async () => {
+                                                    const confirmed = confirm(`"${note.title}" notunu silmek istediğine emin misin?`);
+                                                    if (!confirmed) return;
+
+                                                    try {
+                                                        const token = localStorage.getItem("token");
+                                                        await axios.delete(`/notes/${note.id}`, {
+                                                            headers: {
+                                                                Authorization: `Bearer ${token}`,
+                                                            },
+                                                        });
+                                                        fetchNotes();
+                                                    } catch (err) {
+                                                        console.error("Silme hatası:", err);
+                                                        alert("Not silinirken bir hata oluştu.");
+                                                    }
+                                                }}
+                                                className="btn btn-sm btn-outline btn-error"
+                                            >
+                                                🗑️ Sil
+                                            </button>
+                                        </div>
                                     </div>
                                 </div>
                             ))

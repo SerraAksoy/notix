@@ -6,14 +6,14 @@ import { useRouter } from "next/navigation";
 
 export default function RegisterPage() {
     const [email, setEmail] = useState("");
-    const [username, setUsername] = useState(""); // kullanıcı adı
+    const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const router = useRouter();
 
     const handleRegister = async (e) => {
         e.preventDefault();
         try {
-            await axios.post("/auth/register", { email, password, username }); // 👈 username gönderildi
+            await axios.post("/auth/register", { email, password, username });
             alert("Kayıt başarılı, şimdi giriş yapabilirsin!");
             router.push("/login");
         } catch (err) {
@@ -60,7 +60,7 @@ export default function RegisterPage() {
                 />
 
                 <button type="submit" className="btn btn-success w-full">
-                    🚀 Kayıt Ol
+                    Kayıt Ol
                 </button>
             </form>
 

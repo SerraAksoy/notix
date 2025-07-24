@@ -1,56 +1,57 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import axios from "@/lib/axios";
 import { useRouter } from "next/navigation";
-import Link from "next/link";
 
-export default function NotebooksPage() {
-    const [notebooks, setNotebooks] = useState([]);
-    const [isAuthChecked, setIsAuthChecked] = useState(false);
+export default function NewNotebookPage() {
+    const [name, setName] = useState("");
+    const [description, setDescription] = useState("");
     const router = useRouter();
 
-    useEffect(() => {
-        const token = localStorage.getItem("accessToken");
-        if (!token) {
-            router.push("/login");
-        } else {
-            axios
-                .get("/notebooks")
-                .then((res) => setNotebooks(res.data))
-                .catch((err) => console.error(err))
-                .finally(() => setIsAuthChecked(true));
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        try {
+            const token = localStorage.getItem("accessToken");
+            await axios.post(
+                "/notebooks",
+                { name, description },
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                }
+            );
+            router.push("/dashboard/notebooks");
+        } catch (err) {
+            console.error("Defter oluşturulamadı:", err);
+            alert("Defter oluşturulurken bir hata oluştu. Lütfen tekrar deneyin.");
         }
-    }, [router]);
-
-    if (!isAuthChecked) return null;
+    };
 
     return (
-        <div className="p-6">
-            <h1 className="text-3xl font-bold mb-6">Not Defterlerim</h1>
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {notebooks.map((nb) => (
-                    <div key={nb.id} className="card bg-base-100 shadow-md hover:shadow-lg transition">
-                        <div className="card-body">
-                            <h2 className="card-title text-primary">
-                                <Link href={`/dashboard/notebooks/${nb.id}`} className="hover:underline">
-                                    {nb.name}
-                                </Link>
-                            </h2>
-                            {nb.description && (
-                                <p className="text-sm text-gray-500">{nb.description}</p>
-                            )}
-                            <div className="card-actions justify-end mt-2">
-                                <Link
-                                    href={`/dashboard/notebooks/${nb.id}`}
-                                    className="btn btn-sm btn-primary"
-                                >
-                                    Notlara Git
-                                </Link>
-                            </div>
-                        </div>
-                    </div>
-                ))}
+        <div className="min-h-screen px-6 py-24 bg-[url('/dashboard-bg1.jpeg')] bg-cover bg-center">
+            <div className="max-w-xl mx-auto bg-white/80 p-8 rounded-lg shadow">
+                <h1 className="text-2xl font-bold text-primary mb-6">📔 Yeni Not Defteri Oluştur</h1>
+                <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+                    <input
+                        type="text"
+                        placeholder="Defter adı"
+                        className="input input-bordered"
+                        value={name}
+                        onChange={(e) => setName(e.target.value)}
+                        required
+                    />
+                    <textarea
+                        placeholder="Açıklama (isteğe bağlı)"
+                        className="textarea textarea-bordered"
+                        value={description}
+                        onChange={(e) => setDescription(e.target.value)}
+                    />
+                    <button type="submit" className="btn btn-primary">
+                        ➕ Oluştur
+                    </button>
+                </form>
             </div>
         </div>
     );
